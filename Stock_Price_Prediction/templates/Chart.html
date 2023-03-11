@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kết quả | AI Dự đoán giá chứng khoán</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+    {% comment %} {% block messages %}
+        {% if messages %}
+        <div class="container" style="color: firebrick; margin-top: 20px">
+            {% for message in messages %}
+            {{message}}
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endblock messages %} {% endcomment %}
+
+    <div class="content">
+        <div class="container-fluid pt-4 px-4">
+            <div class="col-17">
+                <div class="card">
+                    <div class="card-body">
+                        <h2>Mô hình trực quan dữ liệu</h2>
+                        <div id="myChar"></div>
+                        <h2>==> Dự đoán giá của ngày tiếp theo là: {{Prediction}}</h2>
+                        <h4 style="color: firebrick;">Độ chênh lệnh dự đoán khoảng: &#177;{{Difference}}</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            new ApexCharts(document.querySelector("#myChar"), {
+                series: [{
+                    name: '{{ attribute|safe }}',
+                    data: {{ listvalues|safe }},
+                }],
+                chart: {
+                    height: 350,
+                    type: 'area',
+                    toolbar: {
+                    show: false
+                    },
+                },
+                markers: {
+                    size: 4
+                },
+                colors: ['#4154f1', '#2eca6a', '#ff771d'],
+                fill: {
+                    type: "gradient",
+                    gradient: {
+                    shadeIntensity: 1,
+                    opacityFrom: 0.3,
+                    opacityTo: 0.4,
+                    stops: [0, 90, 100]
+                    }
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    curve: 'smooth',
+                    width: 2
+                },
+                xaxis: {
+                    type: 'date',
+                    categories: {{ listKeys|safe }}
+                },
+                tooltip: {
+                    x: {
+                    format: 'dd/MM/yy'
+                    },
+                }
+            }).render();
+        });
+    </script>
+    <script src="{% static 'js/apexcharts.min.js' %}"></script>
+</body>
+</html>
